@@ -1,23 +1,23 @@
 package com.myauto.elements;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 /**
  * Created by File on 2017/5/26.
  */
 public class Button extends AbstractElement {
-    private static WebElement button;
-
     public Button(By locator) {
         super(locator);
-        button = findElement(locator);
+    }
+
+    public Button(By parent, By locator) {
+        super(parent, locator);
     }
 
     public boolean click() {
         try {
-            if (waitForClickable(button)) {
-                button.click();
+            if (waitForClickable(mainElement)) {
+                mainElement.click();
                 return true;
             } else {
                 return false;
@@ -27,4 +27,5 @@ public class Button extends AbstractElement {
             return false;
         }
     }
+
 }

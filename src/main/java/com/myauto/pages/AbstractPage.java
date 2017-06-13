@@ -30,7 +30,7 @@ public abstract class AbstractPage extends AbstractComponent {
         return url;
     }
 
-    protected abstract boolean isLoaded();
-
-    protected abstract void load();
+    public String getCurrentUrl() {
+        return driver.getCurrentUrl();
+    }
 }

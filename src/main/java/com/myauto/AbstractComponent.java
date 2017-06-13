@@ -3,11 +3,14 @@ package com.myauto;
 import com.myauto.util.Util;
 import com.myauto.util.WebDriverFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by File on 2017/5/26.
@@ -22,9 +25,32 @@ public abstract class AbstractComponent {
         wait = new WebDriverWait(driver, Util.WAIT_FOR_ELEMENT_TIMEOUT);
     }
 
-    protected boolean waitForEnabled(final WebElement element) {
+    protected abstract boolean isLoaded();
+
+    protected abstract void load();
+
+    public boolean isPresent(By locator) {
         try {
-            wait.until(new ExpectedCondition<Boolean>() {
+            return driver.findElement(locator) != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isPresent(By parent, By locator) {
+        try {
+            if (parent != null)
+                return driver.findElement(parent).findElement(locator) != null;
+            else
+                return isPresent(locator);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean waitForEnabled(final WebElement element) {
+        try {
+            return wait.until(new ExpectedCondition<Boolean>() {
                 public Boolean apply(WebDriver webDriver) {
                     return element.isEnabled();
                 }
@@ -32,41 +58,95 @@ public abstract class AbstractComponent {
         } catch (Exception e) {
             return false;
         }
-
-        return true;
     }
 
-    protected boolean waitForPresence(By locator) {
+    public boolean waitForDisappeared(By locator) {
         try {
-            wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+            return wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
         } catch (Exception e) {
             return false;
         }
-
-        return true;
     }
 
-    protected boolean waitForVisible(WebElement element) {
+    public boolean waitForDisappeared(By parent, By locator) {
+        if (parent != null) {
+            try {
+                final WebElement element = driver.findElement(parent).findElement(locator);
+
+                return wait.until(new ExpectedCondition<Boolean>() {
+                    public Boolean apply(WebDriver webDriver) {
+                        return !element.isDisplayed();
+                    }
+                });
+
+            } catch (Exception e) {
+                return false;
+            }
+        } else
+            return waitForDisappeared(locator);
+    }
+
+    public boolean waitForAppeared(By locator) {
         try {
-            wait.until(ExpectedConditions.visibilityOf(element));
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)) != null;
         } catch (Exception e) {
             return false;
         }
-
-        return true;
     }
 
-    protected boolean waitForClickable(WebElement element) {
+    public boolean waitForAppeared(By parent, final By locator) {
+        if (parent != null) {
+            waitForAppeared(parent);
+            final WebElement parentElement = findElement(parent);
+
+            return wait.until(new ExpectedCondition<Boolean>() {
+                public Boolean apply(WebDriver webDriver) {
+                    try {
+                        WebElement element = parentElement.findElement(locator);
+
+                        return element.isDisplayed();
+                    } catch (Exception e) {
+                        return false;
+                    }
+                }
+            });
+        } else
+            return waitForAppeared(locator);
+    }
+
+    public boolean waitForPresence(By locator) {
         try {
-            wait.until(ExpectedConditions.elementToBeClickable(element));
+            return wait.until(ExpectedConditions.presenceOfElementLocated(locator)) != null;
         } catch (Exception e) {
             return false;
         }
-
-        return true;
     }
 
-    protected WebElement findElement(By locator) {
+    public boolean waitForVisible(WebElement element) {
+        try {
+            return wait.until(ExpectedConditions.visibilityOf(element)) != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean waitForVisible(WebElement element, long timeout) {
+        try {
+            return wait.withTimeout(timeout, TimeUnit.SECONDS).until(ExpectedConditions.visibilityOf(element)) != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean waitForClickable(WebElement element) {
+        try {
+            return wait.until(ExpectedConditions.elementToBeClickable(element)) != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public WebElement findElement(By locator) {
         if (waitForPresence(locator))
             return driver.findElement(locator);
         else

@@ -1,32 +1,28 @@
-package com.alo7.step_definitions;
+package com.fenby.step_definitions;
 
 
 import com.myauto.pages.AbstractPage;
-import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 
 /**
  * Created by wenjia on 6/1/2017.
  */
-public class CommonSteps implements Alo7BDD {
+public class CommonSteps implements FenbyBDD {
 
     @Given("^(.*) page is open$")
     public void openLoginPage(String pageName) {
         AbstractPage page;
 
         switch (pageName.toLowerCase()) {
-            case "login":
-                page = loginPage;
+            case "register":
+                page = registerPage;
                 break;
-            case "classhome":
-                page = classHomePage;
-                break;
-            case "homeworks":
-                page = homeworksPage;
+            case "home":
+                page = homePage;
                 break;
             default:
-                page = loginPage;
+                page = homePage;
         }
 
         page.openPage();
