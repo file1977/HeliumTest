@@ -7,23 +7,26 @@ import org.openqa.selenium.WebElement;
 /**
  * Created by File on 2017/5/26.
  */
-public abstract class AbstractElement extends AbstractComponent {
+public class CommonElement extends AbstractComponent {
     WebElement mainElement;
     By locator;
     By parent;
 
-    protected AbstractElement(By locator) {
-        this.locator=locator;
+    public CommonElement(By locator) {
+        this.locator = locator;
     }
 
-    protected AbstractElement(By parent, By locator) {
+    public CommonElement(By parent, By locator) {
         this.parent = parent;
-        this.locator=locator;
+        this.locator = locator;
     }
 
-    @Override
-    public boolean isLoaded() {
-        return false;
+    public By getLocator() {
+        return locator;
+    }
+
+    public By getParent() {
+        return parent;
     }
 
     @Override
@@ -32,9 +35,12 @@ public abstract class AbstractElement extends AbstractComponent {
             mainElement = findElement(parent).findElement(locator);
         else
             mainElement = findElement(locator);
+
+        isLoaded = true;
     }
 
     public WebElement getMainElement() {
+        load();
         return mainElement;
     }
 
@@ -46,16 +52,18 @@ public abstract class AbstractElement extends AbstractComponent {
         return super.waitForAppeared(parent, locator);
     }
 
-
     public boolean isDisplayed() {
+        load();
         return mainElement.isDisplayed();
     }
 
     public boolean isEnabled() {
+        load();
         return mainElement.isEnabled();
     }
 
     public boolean isSelected() {
+        load();
         return mainElement.isSelected();
     }
 

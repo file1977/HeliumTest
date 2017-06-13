@@ -1,10 +1,17 @@
 package com.fenby.pages;
 
 import com.myauto.elements.Button;
+import com.myauto.elements.CommonElement;
+import com.myauto.elements.PasswordBox;
+import com.myauto.elements.TextBox;
 import com.myauto.pages.AbstractPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import java.util.Arrays;
 
 /**
  * Created by wenjia on 6/13/2017.
@@ -13,13 +20,15 @@ public class HomePage extends AbstractPage {
     @FindBy(id = "header")
     WebElement headerSection;
 
-    @FindBy(className = "navbar-right")
-    WebElement navbarRight;
-
-    Button signup = new Button(By.xpath("//button[contains(@ng-click, 'signup')]"));
-    Button login = new Button(By.xpath("//button[contains(@ng-click, 'login()')]"));
-    Button profile = new Button(By.xpath("//li[contains(@class, 'nav-profile')]/a[contains(@class,'dropdown-toggle')]"));
-    Button logout = new Button(By.xpath("//a[@ng-click='logout()']"));
+    CommonElement navbarRight = new CommonElement(By.className("navbar-right"));;
+    CommonElement loginDialog = new CommonElement(By.className("modal-dialog"));
+    TextBox dialogEmailBox = new TextBox(loginDialog.getLocator(), By.xpath(".//input[@ng-model='user.email']"));
+    PasswordBox dialogPasswordBox = new PasswordBox(loginDialog.getLocator(), By.xpath(".//input[@ng-model='user.password']"));
+    Button dialogLogin = new Button(loginDialog.getLocator(), By.xpath(".//button[contains(@ng-click, 'login()')]"));
+    Button signup = new Button(navbarRight.getLocator(), By.xpath(".//button[contains(@ng-click, 'signup')]"));
+    Button login = new Button(navbarRight.getLocator(), By.xpath(".//button[contains(@ng-click, 'login()')]"));
+    Button profile = new Button(navbarRight.getLocator(), By.xpath(".//li[contains(@class, 'nav-profile')]/a[contains(@class,'dropdown-toggle')]"));
+    Button logout = new Button(navbarRight.getLocator(), By.xpath(".//a[@ng-click='logout()']"));
 
 
     public HomePage() {
@@ -28,20 +37,25 @@ public class HomePage extends AbstractPage {
 
     @Override
     public boolean isLoaded() {
-        waitForVisible(navbarRight);
-        return getCurrentUrl().equals(getUrl());
+        return isLoaded && getCurrentUrl().equals(getUrl());
     }
 
     @Override
     public void load() {
-        waitForVisible(navbarRight);
+        navbarRight.waitForAppeared();
 
-        if (isGuestHomePage()) {
-            signup.load();
-            login.load();
-        } else if (isUserHomePage()) {
-            profile.load();
-            logout.load();
+        isLoaded = true;
+    }
+
+    public void load(String pageType) {
+        load();
+        switch (pageType.toLowerCase()) {
+            case "userpage":
+                profile.waitForAppeared();
+                break;
+            case "guestpage":
+                signup.waitForAppeared();
+                break;
         }
     }
 
@@ -51,8 +65,19 @@ public class HomePage extends AbstractPage {
 
         profile.waitForDisappeared();
         signup.waitForAppeared();
+        login.waitForAppeared();
 
-        load();
+        load("guestpage");
+    }
+
+    public void login(String emailAddr, String password) {
+        login.click();
+        loginDialog.waitForAppeared();
+        dialogEmailBox.setText(emailAddr);
+        dialogPasswordBox.setText(password);
+        dialogLogin.click();
+        dialogLogin.waitForDisappeared();
+        load("userpage");
     }
 
     public void clickSignup() {
@@ -64,7 +89,15 @@ public class HomePage extends AbstractPage {
     }
 
     public boolean checkUserImage(String imageFileName) {
-        return profile.getMainElement().findElement(By.tagName("img")).getAttribute("src").contains(imageFileName);
+        WebElement userImage = profile.getMainElement().findElement(By.tagName("img"));
+
+        if (userImage != null) {
+            String imageSrc = userImage.getAttribute("src");
+            if (imageSrc != null)
+                return imageSrc.contains(imageFileName);
+        }
+
+        return false;
     }
 
     public boolean isUserHomePage() {

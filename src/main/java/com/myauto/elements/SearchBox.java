@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 /**
  * Created by File on 2017/5/26.
  */
-public class SearchBox extends AbstractElement {
+public class SearchBox extends CommonElement {
     private TextBox inputSearch;
     private Button buttonSearch;
 
@@ -22,17 +22,15 @@ public class SearchBox extends AbstractElement {
     }
 
     @Override
-    public boolean isLoaded() {
-        return false;
-    }
-
-    @Override
     public void load() {
         inputSearch.load();
         buttonSearch.load();
+        isLoaded = true;
     }
 
     public void search(String content) {
+        load();
+
         inputSearch.setText(content);
         buttonSearch.click();
     }

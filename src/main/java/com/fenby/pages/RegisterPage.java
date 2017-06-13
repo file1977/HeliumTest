@@ -26,16 +26,12 @@ public class RegisterPage extends AbstractPage {
     }
 
     @Override
-    public boolean isLoaded() {
-        return false;
-    }
-
-    @Override
     public void load() {
-        emailBox.load();
-        registerButton.load();
-        passwordBox.load();
-        confirmedBox.load();
+        emailBox.waitForAppeared();
+//            registerButton.load();
+//            passwordBox.load();
+        confirmedBox.waitForAppeared();
+        isLoaded = true;
     }
 
     public TextBox getEmailBox() {
@@ -74,7 +70,7 @@ public class RegisterPage extends AbstractPage {
         if (msgErrRequired.isDisplayed())
             return "required_err";
 
-        if (waitForVisible(msgErrPattern, 2))
+        if (waitForAppeared(msgErrPattern, 2))
             return "pattern_err";
 
         if (msgValid.isDisplayed())

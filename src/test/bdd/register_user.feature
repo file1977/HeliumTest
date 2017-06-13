@@ -1,8 +1,8 @@
 Feature: Register new users
 
-  Scenario: Login with phone number and password
-    Given home page is open
-    And Click signup button
+#  Scenario: Login with phone number and password
+#    Given home page is open
+#    And Click signup button
 
 #  Scenario Outline: Register fields check
 #    When Set email as "<email>", password as "<password>" and confirmed password as "<confirmedPassword>"
@@ -29,8 +29,8 @@ Feature: Register new users
 
     Examples:
       | email           | password |
-      | test008@abc.com | 123123   |
-      | test009@abc.com | 123qwe   |
+      | test013@abc.com | 123123   |
+#      | test014@abc.com | 123qwe   |
 
 #  Scenario: Quit
 #    Then Close the browser

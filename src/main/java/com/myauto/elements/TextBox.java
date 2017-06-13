@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 /**
  * Created by File on 2017/5/26.
  */
-public class TextBox extends AbstractElement {
+public class TextBox extends CommonElement {
     public TextBox(By locator) {
         super(locator);
     }
@@ -17,14 +17,10 @@ public class TextBox extends AbstractElement {
         super(parent, locator);
     }
 
-    @Override
-    public boolean isLoaded() {
-        return false;
-    }
-
-
     public boolean setText(final String text) {
-        if (waitForEnabled(mainElement) && waitForVisible(mainElement)) {
+        load();
+
+        if (waitForEnabled(mainElement) && waitForAppeared(mainElement)) {
             mainElement.clear();
             mainElement.sendKeys(text);
 

@@ -10,6 +10,8 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractComponent {
     protected WebDriver driver;
     protected WebDriverWait wait;
+    protected boolean isLoaded = false;
 
 
     public AbstractComponent() {
@@ -25,9 +28,15 @@ public abstract class AbstractComponent {
         wait = new WebDriverWait(driver, Util.WAIT_FOR_ELEMENT_TIMEOUT);
     }
 
-    protected abstract boolean isLoaded();
+    protected boolean isLoaded() {
+        return isLoaded;
+    }
 
-    protected abstract void load();
+    ;
+
+    protected void load() {
+        isLoaded = true;
+    }
 
     public boolean isPresent(By locator) {
         try {
@@ -86,6 +95,13 @@ public abstract class AbstractComponent {
             return waitForDisappeared(locator);
     }
 
+    public boolean waitForDisappeared(WebElement element) {
+        if (element == null)
+            return true;
+
+        return wait.until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(element)));
+    }
+
     public boolean waitForAppeared(By locator) {
         try {
             return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)) != null;
@@ -114,15 +130,7 @@ public abstract class AbstractComponent {
             return waitForAppeared(locator);
     }
 
-    public boolean waitForPresence(By locator) {
-        try {
-            return wait.until(ExpectedConditions.presenceOfElementLocated(locator)) != null;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public boolean waitForVisible(WebElement element) {
+    public boolean waitForAppeared(WebElement element) {
         try {
             return wait.until(ExpectedConditions.visibilityOf(element)) != null;
         } catch (Exception e) {
@@ -130,9 +138,17 @@ public abstract class AbstractComponent {
         }
     }
 
-    public boolean waitForVisible(WebElement element, long timeout) {
+    public boolean waitForAppeared(WebElement element, long timeout) {
         try {
             return wait.withTimeout(timeout, TimeUnit.SECONDS).until(ExpectedConditions.visibilityOf(element)) != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean waitForPresence(By locator) {
+        try {
+            return wait.until(ExpectedConditions.presenceOfElementLocated(locator)) != null;
         } catch (Exception e) {
             return false;
         }

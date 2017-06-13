@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 /**
  * Created by File on 2017/5/26.
  */
-public class PasswordBox extends AbstractElement {
+public class PasswordBox extends CommonElement {
     public PasswordBox(By locator) {
         super(locator);
     }
@@ -18,6 +18,8 @@ public class PasswordBox extends AbstractElement {
     }
 
     public boolean setText(final String text) {
+        load();
+
         if (waitForEnabled(mainElement)) {
             mainElement.clear();
             mainElement.sendKeys(text);

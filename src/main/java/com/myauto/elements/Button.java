@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 /**
  * Created by File on 2017/5/26.
  */
-public class Button extends AbstractElement {
+public class Button extends CommonElement {
     public Button(By locator) {
         super(locator);
     }
@@ -15,6 +15,8 @@ public class Button extends AbstractElement {
     }
 
     public boolean click() {
+        load();
+
         try {
             if (waitForClickable(mainElement)) {
                 mainElement.click();

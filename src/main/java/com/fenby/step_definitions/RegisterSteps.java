@@ -15,7 +15,7 @@ public class RegisterSteps implements FenbyBDD {
         registerPage.setConfirmdePassword(password);
         registerPage.getRegisterButton().click();
 
-        homePage.isLoaded();
+        homePage.load("userpage");
     }
 
     @When("^Set email as \"(.*)\", password as \"(.*)\" and confirmed password as \"(.*)\"$")
