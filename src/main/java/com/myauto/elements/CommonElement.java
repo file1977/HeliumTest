@@ -31,12 +31,26 @@ public class CommonElement extends AbstractComponent {
 
     @Override
     public void load() {
-        if (parent != null)
-            mainElement = findElement(parent).findElement(locator);
+        WebElement parentElement;
+        if (parent != null) {
+            parentElement = findGlobalElement(parent);
+            if (parentElement != null)
+                mainElement = parentElement.findElement(locator);
+            else
+                mainElement = null;
+        }
         else
-            mainElement = findElement(locator);
+            mainElement = findGlobalElement(locator);
 
         isLoaded = true;
+    }
+
+    public WebElement findElement(By locator) {
+        load();
+        try {
+            return mainElement.findElement(locator);
+        } catch (Exception e) {}
+        return null;
     }
 
     public WebElement getMainElement() {
@@ -50,6 +64,10 @@ public class CommonElement extends AbstractComponent {
 
     public boolean waitForAppeared() {
         return super.waitForAppeared(parent, locator);
+    }
+
+    public boolean waitForAppeared(long timeout) {
+        return super.waitForAppeared(parent, locator, timeout);
     }
 
     public boolean isDisplayed() {

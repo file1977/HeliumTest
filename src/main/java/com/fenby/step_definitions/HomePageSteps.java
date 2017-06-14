@@ -7,7 +7,7 @@ import org.junit.Assert;
 /**
  * Created by wenjia on 6/13/2017.
  */
-public class HomePageSteps implements FenbyBDD {
+public class HomePageSteps extends FenbyBDD {
 
     @When("^Click signup button$")
     public void clickSignup() {

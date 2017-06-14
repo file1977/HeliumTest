@@ -1,21 +1,32 @@
 package com.fenby.step_definitions;
 
+import com.myauto.util.Util;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.junit.Assert;
 
+import java.util.Random;
+
 /**
  * Created by wenjia on 6/13/2017.
  */
-public class RegisterSteps implements FenbyBDD {
+public class RegisterSteps extends FenbyBDD {
     @When("^Create a new user with email \"(.*)\" and password \"(.*)\"$")
     public void createNewUser(String emailAddr, String password) {
-        registerPage.setEmailAddr(emailAddr);
+        if (!registerPage.setEmailAddr(emailAddr))
+            Assert.fail(emailAddr + " is invalid!");
         registerPage.setPassword(password);
         registerPage.setConfirmdePassword(password);
         registerPage.getRegisterButton().click();
 
         homePage.load("userpage");
+    }
+
+    @When("^Create a new user with email format \"(.*)\"<random_string>@\"(.*)\" and password \"(.*)\"$")
+    public void createNewUserWithFormattedEmail(String email_prefix, String email_domain, String password) {
+        String emailAddr = email_prefix + Util.CURRENT_TIME +"@"+ email_domain;
+
+        createNewUser(emailAddr, password);
     }
 
     @When("^Set email as \"(.*)\", password as \"(.*)\" and confirmed password as \"(.*)\"$")

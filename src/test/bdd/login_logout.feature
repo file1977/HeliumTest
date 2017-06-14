@@ -1,9 +1,9 @@
 Feature: Login and logout
 
-  Scenario: Login with phone number and password
+  Scenario: Open the home page
     Given home page is open
 
-  Scenario Outline: Register new users
+  Scenario Outline: Login with email and password
     When Login with email "<email>" and password "<password>"
     Then Current page is user home page
     When User logout

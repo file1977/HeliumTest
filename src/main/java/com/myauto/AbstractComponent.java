@@ -3,14 +3,13 @@ package com.myauto;
 import com.myauto.util.Util;
 import com.myauto.util.WebDriverFactory;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NotFoundException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -18,8 +17,8 @@ import java.util.concurrent.TimeUnit;
  * Created by File on 2017/5/26.
  */
 public abstract class AbstractComponent {
-    protected WebDriver driver;
-    protected WebDriverWait wait;
+    protected static WebDriver driver;
+    protected static WebDriverWait wait;
     protected boolean isLoaded = false;
 
 
@@ -110,24 +109,64 @@ public abstract class AbstractComponent {
         }
     }
 
-    public boolean waitForAppeared(By parent, final By locator) {
+    public boolean waitForAppeared(By locator, long timeout) {
+        try {
+            return wait.withTimeout(timeout, TimeUnit.SECONDS).until(ExpectedConditions.visibilityOfElementLocated(locator)) != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    protected boolean waitForAppeared(By parent, final By locator) {
         if (parent != null) {
-            waitForAppeared(parent);
-            final WebElement parentElement = findElement(parent);
+            final WebElement parentElement = findGlobalElement(parent);
+            if (parentElement == null)
+                return false;
 
-            return wait.until(new ExpectedCondition<Boolean>() {
-                public Boolean apply(WebDriver webDriver) {
-                    try {
-                        WebElement element = parentElement.findElement(locator);
+            try {
+                return wait.until(new ExpectedCondition<Boolean>() {
+                    public Boolean apply(WebDriver webDriver) {
+                        try {
+                            WebElement element = parentElement.findElement(locator);
 
-                        return element.isDisplayed();
-                    } catch (Exception e) {
-                        return false;
+                            return element.isDisplayed();
+                        } catch (Exception e) {
+                            return false;
+                        }
                     }
-                }
-            });
+                });
+            } catch (TimeoutException e) {
+                return false;
+            }
         } else
             return waitForAppeared(locator);
+    }
+
+    protected boolean waitForAppeared(By parent, final By locator, long timeout) {
+        if (parent != null) {
+            final WebElement parentElement = findGlobalElement(parent);
+            if (parentElement == null)
+                return false;
+
+            try {
+
+                return wait.withTimeout(timeout, TimeUnit.SECONDS).until(new ExpectedCondition<Boolean>() {
+                    public Boolean apply(WebDriver webDriver) {
+                        try {
+                            WebElement element = parentElement.findElement(locator);
+
+                            return element.isDisplayed();
+                        } catch (Exception e) {
+                            return false;
+                        }
+                    }
+                });
+            } catch (TimeoutException e) {
+                return false;
+            }
+
+        } else
+            return waitForAppeared(locator, timeout);
     }
 
     public boolean waitForAppeared(WebElement element) {
@@ -146,7 +185,7 @@ public abstract class AbstractComponent {
         }
     }
 
-    public boolean waitForPresence(By locator) {
+    public static boolean waitForPresence(By locator) {
         try {
             return wait.until(ExpectedConditions.presenceOfElementLocated(locator)) != null;
         } catch (Exception e) {
@@ -162,11 +201,13 @@ public abstract class AbstractComponent {
         }
     }
 
-    public WebElement findElement(By locator) {
+    public static WebElement findGlobalElement(By locator) {
         if (waitForPresence(locator))
-            return driver.findElement(locator);
-        else
-            return null;
+            try {
+                return driver.findElement(locator);
+            } catch (Exception e) {
+            }
+        return null;
     }
 
 }

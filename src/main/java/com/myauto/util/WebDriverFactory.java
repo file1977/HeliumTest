@@ -7,7 +7,6 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +27,6 @@ public class WebDriverFactory {
         prefs.put("credentials_enable_service", false);
         prefs.put("profile.password_manager_enabled", false);
         options.setExperimentalOption("prefs", prefs);
-//        options.setBinary("C:\\MyWork\\alo7\\chromedriver.exe");
         WebDriver chromeDriver = new ChromeDriver(options);
         chromeDriver.manage().timeouts().implicitlyWait(Util.WAIT_FOR_ELEMENT_TIMEOUT, TimeUnit.SECONDS);
 

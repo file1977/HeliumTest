@@ -1,24 +1,26 @@
 package com.fenby.pages;
 
 import com.myauto.elements.Button;
+import com.myauto.elements.CommonElement;
 import com.myauto.elements.PasswordBox;
 import com.myauto.elements.TextBox;
-import com.myauto.pages.AbstractPage;
+import com.myauto.pages.CommonPage;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
+
 
 /**
  * Created by wenjia on 6/13/2017.
  */
-public class RegisterPage extends AbstractPage {
-    @FindBy(name = "register_valid_form")
-    private WebElement registerForm;
-
+public class RegisterPage extends CommonPage {
+    private CommonElement registerForm = new CommonElement(By.name("register_valid_form"));
     private TextBox emailBox = new TextBox(By.xpath("//input[@id='id_email']"));
     private PasswordBox passwordBox = new PasswordBox(By.xpath("//input[@id='id_password1']"));
     private PasswordBox confirmedBox = new PasswordBox(By.xpath("//input[@id='id_password2']"));
     private Button registerButton = new Button(By.xpath("//button[@type='submit']"));
+
+    private CommonElement msgErrRequired = new CommonElement(registerForm.getLocator(), By.xpath(".//li[contains(@ng-show,'email.$error.required')]"));
+    private CommonElement msgErrPattern = new CommonElement(registerForm.getLocator(), By.xpath(".//li[contains(@ng-show,'email.$error.pattern')]"));
+    private CommonElement msgValid = new CommonElement(registerForm.getLocator(), By.xpath(".//li[contains(@ng-show,'email.$valid')]"));
 
 
     public RegisterPage() {
@@ -50,8 +52,16 @@ public class RegisterPage extends AbstractPage {
         return registerButton;
     }
 
-    public void setEmailAddr(String mailAddr) {
+    public boolean setEmailAddr(String mailAddr) {
         emailBox.setText(mailAddr);
+
+        if (msgErrPattern.waitForAppeared(2))
+            return false;
+
+        if (msgValid.waitForAppeared())
+            return true;
+
+        return false;
     }
 
     public void setPassword(String password) {
@@ -63,14 +73,10 @@ public class RegisterPage extends AbstractPage {
     }
 
     public String checkEmail() {
-        WebElement msgErrRequired = registerForm.findElement(By.xpath(".//li[contains(@ng-show,'email.$error.required')]"));
-        WebElement msgErrPattern = registerForm.findElement(By.xpath(".//li[contains(@ng-show,'email.$error.pattern')]"));
-        WebElement msgValid = registerForm.findElement(By.xpath(".//li[contains(@ng-show,'email.$valid')]"));
-
         if (msgErrRequired.isDisplayed())
             return "required_err";
 
-        if (waitForAppeared(msgErrPattern, 2))
+        if (msgErrPattern.waitForAppeared(2))
             return "pattern_err";
 
         if (msgValid.isDisplayed())
@@ -80,8 +86,8 @@ public class RegisterPage extends AbstractPage {
     }
 
     public String checkPassword() {
-        WebElement msgErrRequired = registerForm.findElement(By.xpath(".//li[contains(@ng-show,'password1.$error.required')]"));
-        WebElement msgErrLength = registerForm.findElement(By.xpath(".//li[contains(@ng-show,'password1.$error.minlength')]"));
+        CommonElement msgErrRequired = new CommonElement(registerForm.getLocator(), By.xpath(".//li[contains(@ng-show,'password1.$error.required')]"));
+        CommonElement msgErrLength = new CommonElement(registerForm.getLocator(), By.xpath(".//li[contains(@ng-show,'password1.$error.minlength')]"));
 
         if (msgErrRequired.isDisplayed())
             return "required_err";
@@ -93,8 +99,8 @@ public class RegisterPage extends AbstractPage {
     }
 
     public String checkConfirmedPassword() {
-        WebElement msgErrRequired = registerForm.findElement(By.xpath(".//li[contains(@ng-show,'password2.$error.required')]"));
-        WebElement msgErrLength = registerForm.findElement(By.xpath(".//li[contains(@ng-show,'password2.$error.minlength')]"));
+        CommonElement msgErrRequired = new CommonElement(registerForm.getLocator(), By.xpath(".//li[contains(@ng-show,'password2.$error.required')]"));
+        CommonElement msgErrLength = new CommonElement(registerForm.getLocator(), By.xpath(".//li[contains(@ng-show,'password2.$error.minlength')]"));
 
         if (msgErrRequired.isDisplayed())
             return "required_err";

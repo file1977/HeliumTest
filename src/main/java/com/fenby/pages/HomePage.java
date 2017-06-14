@@ -4,19 +4,16 @@ import com.myauto.elements.Button;
 import com.myauto.elements.CommonElement;
 import com.myauto.elements.PasswordBox;
 import com.myauto.elements.TextBox;
-import com.myauto.pages.AbstractPage;
+import com.myauto.pages.CommonPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import java.util.Arrays;
 
 /**
  * Created by wenjia on 6/13/2017.
  */
-public class HomePage extends AbstractPage {
+public class HomePage extends CommonPage {
     @FindBy(id = "header")
     WebElement headerSection;
 
