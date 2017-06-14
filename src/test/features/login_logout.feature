@@ -15,5 +15,5 @@ Feature: Login and logout
       | test012@abc.com | 123123   |
       | test009@abc.com | 123qwe   |
 
-  Scenario: Quit
-    Then Close the browser
+#  Scenario: Quit
+#    Then Close the browser

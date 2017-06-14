@@ -23,7 +23,8 @@ public class CommonPage extends AbstractComponent {
 
     public void openPage() {
         if (url != null && !url.isEmpty()) {
-            driver.get(url);
+//            driver.get(url);
+            driver.navigate().to(url);
             load();
         }
     }

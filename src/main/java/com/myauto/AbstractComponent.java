@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractComponent {
     protected static WebDriver driver;
-    protected static WebDriverWait wait;
+    protected WebDriverWait wait;
     protected boolean isLoaded = false;
 
 
@@ -98,7 +98,11 @@ public abstract class AbstractComponent {
         if (element == null)
             return true;
 
-        return wait.until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(element)));
+        try {
+            return wait.until(ExpectedConditions.invisibilityOfAllElements(Collections.singletonList(element)));
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public boolean waitForAppeared(By locator) {
@@ -185,7 +189,7 @@ public abstract class AbstractComponent {
         }
     }
 
-    public static boolean waitForPresence(By locator) {
+    public boolean waitForPresence(By locator) {
         try {
             return wait.until(ExpectedConditions.presenceOfElementLocated(locator)) != null;
         } catch (Exception e) {
@@ -201,7 +205,7 @@ public abstract class AbstractComponent {
         }
     }
 
-    public static WebElement findGlobalElement(By locator) {
+    public WebElement findGlobalElement(By locator) {
         if (waitForPresence(locator))
             try {
                 return driver.findElement(locator);

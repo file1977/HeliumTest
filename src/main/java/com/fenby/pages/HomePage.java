@@ -17,15 +17,15 @@ public class HomePage extends CommonPage {
     @FindBy(id = "header")
     WebElement headerSection;
 
-    CommonElement navbarRight = new CommonElement(By.className("navbar-right"));;
-    CommonElement loginDialog = new CommonElement(By.className("modal-dialog"));
-    TextBox dialogEmailBox = new TextBox(loginDialog.getLocator(), By.xpath(".//input[@ng-model='user.email']"));
-    PasswordBox dialogPasswordBox = new PasswordBox(loginDialog.getLocator(), By.xpath(".//input[@ng-model='user.password']"));
-    Button dialogLogin = new Button(loginDialog.getLocator(), By.xpath(".//button[contains(@ng-click, 'login()')]"));
-    Button signup = new Button(navbarRight.getLocator(), By.xpath(".//button[contains(@ng-click, 'signup')]"));
-    Button login = new Button(navbarRight.getLocator(), By.xpath(".//button[contains(@ng-click, 'login()')]"));
-    Button profile = new Button(navbarRight.getLocator(), By.xpath(".//li[contains(@class, 'nav-profile')]/a[contains(@class,'dropdown-toggle')]"));
-    Button logout = new Button(navbarRight.getLocator(), By.xpath(".//a[@ng-click='logout()']"));
+    private CommonElement navbarRight = new CommonElement(By.className("navbar-right"));;
+    private CommonElement loginDialog = new CommonElement(By.className("modal-dialog"));
+    private TextBox dialogEmailBox = new TextBox(loginDialog.getLocator(), By.xpath(".//input[@ng-model='user.email']"));
+    private PasswordBox dialogPasswordBox = new PasswordBox(loginDialog.getLocator(), By.xpath(".//input[@ng-model='user.password']"));
+    private Button dialogLogin = new Button(loginDialog.getLocator(), By.xpath(".//button[contains(@ng-click, 'login()')]"));
+    private Button signup = new Button(navbarRight.getLocator(), By.xpath(".//button[contains(@ng-click, 'signup')]"));
+    private Button login = new Button(navbarRight.getLocator(), By.xpath(".//button[contains(@ng-click, 'login()')]"));
+    private Button profile = new Button(navbarRight.getLocator(), By.xpath(".//li[contains(@class, 'nav-profile')]/a[contains(@class,'dropdown-toggle')]"));
+    private Button logout = new Button(navbarRight.getLocator(), By.xpath(".//a[@ng-click='logout()']"));
 
 
     public HomePage() {

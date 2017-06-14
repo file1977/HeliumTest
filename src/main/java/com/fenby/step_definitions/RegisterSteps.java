@@ -22,9 +22,9 @@ public class RegisterSteps extends FenbyBDD {
         homePage.load("userpage");
     }
 
-    @When("^Create a new user with email format \"(.*)\"<random_string>@\"(.*)\" and password \"(.*)\"$")
+    @When("^Create a new user with formatted email \"(.*)_random_string@(.*)\" and password \"(.*)\"$")
     public void createNewUserWithFormattedEmail(String email_prefix, String email_domain, String password) {
-        String emailAddr = email_prefix + Util.CURRENT_TIME +"@"+ email_domain;
+        String emailAddr = email_prefix + "_" + Util.CURRENT_TIME +"@"+ email_domain;
 
         createNewUser(emailAddr, password);
     }

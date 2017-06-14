@@ -9,8 +9,8 @@ import org.openqa.selenium.WebElement;
  */
 public class CommonElement extends AbstractComponent {
     WebElement mainElement;
-    By locator;
-    By parent;
+    private By locator = null;
+    private By parent = null;
 
     public CommonElement(By locator) {
         this.locator = locator;
@@ -38,8 +38,7 @@ public class CommonElement extends AbstractComponent {
                 mainElement = parentElement.findElement(locator);
             else
                 mainElement = null;
-        }
-        else
+        } else
             mainElement = findGlobalElement(locator);
 
         isLoaded = true;
@@ -49,7 +48,8 @@ public class CommonElement extends AbstractComponent {
         load();
         try {
             return mainElement.findElement(locator);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return null;
     }
 

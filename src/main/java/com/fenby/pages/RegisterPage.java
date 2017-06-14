@@ -13,11 +13,10 @@ import org.openqa.selenium.By;
  */
 public class RegisterPage extends CommonPage {
     private CommonElement registerForm = new CommonElement(By.name("register_valid_form"));
-    private TextBox emailBox = new TextBox(By.xpath("//input[@id='id_email']"));
-    private PasswordBox passwordBox = new PasswordBox(By.xpath("//input[@id='id_password1']"));
-    private PasswordBox confirmedBox = new PasswordBox(By.xpath("//input[@id='id_password2']"));
-    private Button registerButton = new Button(By.xpath("//button[@type='submit']"));
-
+    private TextBox emailBox = new TextBox(registerForm.getLocator(), By.xpath(".//input[@id='id_email']"));
+    private PasswordBox passwordBox = new PasswordBox(registerForm.getLocator(), By.xpath(".//input[@id='id_password1']"));
+    private PasswordBox confirmedBox = new PasswordBox(registerForm.getLocator(), By.xpath(".//input[@id='id_password2']"));
+    private Button registerButton = new Button(registerForm.getLocator(), By.xpath(".//button[@type='submit']"));
     private CommonElement msgErrRequired = new CommonElement(registerForm.getLocator(), By.xpath(".//li[contains(@ng-show,'email.$error.required')]"));
     private CommonElement msgErrPattern = new CommonElement(registerForm.getLocator(), By.xpath(".//li[contains(@ng-show,'email.$error.pattern')]"));
     private CommonElement msgValid = new CommonElement(registerForm.getLocator(), By.xpath(".//li[contains(@ng-show,'email.$valid')]"));
@@ -30,8 +29,6 @@ public class RegisterPage extends CommonPage {
     @Override
     public void load() {
         emailBox.waitForAppeared();
-//            registerButton.load();
-//            passwordBox.load();
         confirmedBox.waitForAppeared();
         isLoaded = true;
     }
@@ -54,6 +51,11 @@ public class RegisterPage extends CommonPage {
 
     public boolean setEmailAddr(String mailAddr) {
         emailBox.setText(mailAddr);
+
+        if (mailAddr.length() == 0) {
+            if (msgErrRequired.waitForAppeared())
+                return false;
+        }
 
         if (msgErrPattern.waitForAppeared(2))
             return false;
