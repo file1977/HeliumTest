@@ -10,5 +10,6 @@ public class Util {
 
     public static final String CURRENT_TIME = (new SimpleDateFormat("yyMMddHHmmss")).format(System.currentTimeMillis());
 
+    public static final String CHARTSET = "UTF-8";
 
 }
